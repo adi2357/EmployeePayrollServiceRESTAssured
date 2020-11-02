@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 public class EmployeePayrollData {
 
-	private int employeeId;
-	private String employeeName;
+	private int id;
+	private String name;
 	private double salary;
 	private LocalDate startDate;
 	private String gender;
@@ -14,8 +14,8 @@ public class EmployeePayrollData {
 	}
 
 	public EmployeePayrollData(int employeeId, String employeeName, double salary) {
-		this.employeeId = employeeId;
-		this.employeeName = employeeName;
+		this.id = employeeId;
+		this.name = employeeName;
 		this.salary = salary;
 	}
 
@@ -31,19 +31,19 @@ public class EmployeePayrollData {
 	}
 
 	public int getEmployeeId() {
-		return employeeId;
+		return id;
 	}
 
 	public void setEmployeeId(int employeeId) {
-		this.employeeId = employeeId;
+		this.id = employeeId;
 	}
 
 	public String getEmployeeName() {
-		return employeeName;
+		return name;
 	}
 
 	public void setEmployeeName(String employeeName) {
-		this.employeeName = employeeName;
+		this.name = employeeName;
 	}
 
 	public double getSalary() {
@@ -72,7 +72,7 @@ public class EmployeePayrollData {
 
 	@Override
 	public String toString() {
-		return "Id : " + employeeId + "\t" + "Name : " + employeeName + "\t" + "Gender : " + gender + "\t" + "Salary : "
+		return "Id : " + id + "\t" + "Name : " + name + "\t" + "Gender : " + gender + "\t" + "Salary : "
 				+ salary + "\t" + "Start Date : " + startDate;
 	}
 
@@ -85,12 +85,12 @@ public class EmployeePayrollData {
 		if (getClass() != obj.getClass())
 			return false;
 		EmployeePayrollData other = (EmployeePayrollData) obj;
-		if (employeeId != other.employeeId)
+		if (id != other.id)
 			return false;
-		if (employeeName == null) {
-			if (other.employeeName != null)
+		if (name == null) {
+			if (other.name != null)
 				return false;
-		} else if (!employeeName.equals(other.employeeName))
+		} else if (!name.equals(other.name))
 			return false;
 		if (Double.doubleToLongBits(salary) != Double.doubleToLongBits(other.salary))
 			return false;
