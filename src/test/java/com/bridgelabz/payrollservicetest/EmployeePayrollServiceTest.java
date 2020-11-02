@@ -53,6 +53,12 @@ public class EmployeePayrollServiceTest {
 		return request.put("/employee-payroll/"+employee.getId());
 	}
 
+	public Response deleteEmployeeFromJsonServer(EmployeePayrollData employee) {
+		RequestSpecification request = RestAssured.given();
+		request.header("Content-Type", "application/json");
+		return request.delete("/employee-payroll/"+employee.getId());
+	}
+
 	@Test
 	public void given3EmployeesWhenWrittenToFileShouldMatchNumberOfEmployeeEntries() {
 		EmployeePayrollData[] arrayOfEmployees = {
@@ -156,8 +162,7 @@ public class EmployeePayrollServiceTest {
 	}
 
 	@Test
-	public void givenMultipleEmployees_WhenAdded_ShouldMatchTheCount() throws InterruptedException {
-		
+	public void givenMultipleEmployees_WhenAdded_ShouldMatchEmployeeCount() throws InterruptedException {
 		EmployeePayrollData[] arrayOfEmployees = getEmployeeList();
 		EmployeePayrollService payrollServiceObject = new EmployeePayrollService(Arrays.asList(arrayOfEmployees));
 		
@@ -199,8 +204,7 @@ public class EmployeePayrollServiceTest {
 	}
 
 	@Test
-	public void givenNewSalaryForEmployee_WhenUpdatedInJSONServer_ShouldMatch200response() {
-
+	public void givenNewSalaryForEmployee_WhenUpdatedInJSONServer_ShouldMatch200Response() {
 		EmployeePayrollData[] arrayOfEmployees = getEmployeeList();
 		EmployeePayrollService payrollServiceObject = new EmployeePayrollService(Arrays.asList(arrayOfEmployees));
 		try {
@@ -208,12 +212,27 @@ public class EmployeePayrollServiceTest {
 		} catch (DBException e) {
 			e.printStackTrace();
 		}
-		EmployeePayrollData employeePayrollData = payrollServiceObject.getEmployeePayrollData("Mohit");		
+		EmployeePayrollData employeePayrollData = payrollServiceObject.getEmployeePayrollData("Mohit");
 		Response response = updateEmployeeSalaryInJsonServer(employeePayrollData);
 		int statusCode = response.getStatusCode();
 		Assert.assertEquals(200, statusCode);
 
 		long entries = payrollServiceObject.countEntries(IOService.REST_IO);
 		Assert.assertEquals(10, entries);
+	}
+
+	@Test
+	public void givenEmployee_WhenDeletedFromJSONServer_ShouldMatch200ResponseAndEmployeeCount() {
+		EmployeePayrollData[] arrayOfEmployees = getEmployeeList();
+		EmployeePayrollService payrollServiceObject = new EmployeePayrollService(Arrays.asList(arrayOfEmployees));
+		
+		EmployeePayrollData employeePayrollData = payrollServiceObject.getEmployeePayrollData("Mohit");
+		Response response = deleteEmployeeFromJsonServer(employeePayrollData);
+		int statusCode = response.getStatusCode();
+		Assert.assertEquals(200, statusCode);
+
+		payrollServiceObject.deleteEmployeePayroll("Mohit", IOService.REST_IO);
+		long entries = payrollServiceObject.countEntries(IOService.REST_IO);
+		Assert.assertEquals(9, entries);
 	}
 }

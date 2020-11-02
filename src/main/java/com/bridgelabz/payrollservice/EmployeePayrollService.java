@@ -125,6 +125,14 @@ public class EmployeePayrollService {
 		}
 	}
 
+
+	public void deleteEmployeePayroll(String name, IOService ioType) {
+		if (ioType.equals(IOService.REST_IO)) {
+			EmployeePayrollData employeeToDelete = this.getEmployeePayrollData(name);
+			this.employeePayrollList.remove(employeeToDelete);
+		}
+	}
+
 	public long countEntries(IOService ioType) {
 		if (ioType.equals(IOService.FILE_IO))
 			return new FileIOService().countEntries();

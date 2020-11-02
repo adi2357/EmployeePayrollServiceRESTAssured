@@ -106,17 +106,6 @@
         "day": 2
       },
       "gender": "F"
-    },
-    {
-      "id": 10,
-      "name": "Mohit",
-      "salary": 6000000,
-      "startDate": {
-        "year": 2020,
-        "month": 11,
-        "day": 2
-      },
-      "gender": "M"
     }
   ]
 }
