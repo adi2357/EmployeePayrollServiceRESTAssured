@@ -6,13 +6,40 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.bridgelabz.model.EmployeePayrollData;
 import com.bridgelabz.payrollservice.EmployeePayrollService;
 import com.bridgelabz.payrollservice.EmployeePayrollService.IOService;
+import com.google.gson.Gson;
+
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 public class EmployeePayrollServiceTest {
+
+	@Before
+	public void setup() {
+		RestAssured.baseURI = "http://localhost";
+		RestAssured.port = 3000;
+	}
+
+	private EmployeePayrollData[] getEmployeeList() {
+		Response response = RestAssured.get("/employee-payroll");
+		System.out.println("Employee Payroll Entries in JSON Server :\n" + response.asString());
+		EmployeePayrollData[] arrayOfEmployees = new Gson().fromJson(response.asString(), EmployeePayrollData[].class);
+		return arrayOfEmployees;
+	}
+
+	public Response addEmployeeToJsonServer(EmployeePayrollData newEmployee) {
+		String employeeJson = new Gson().toJson(newEmployee);
+		RequestSpecification request = RestAssured.given();
+		request.header("Content-Type", "application/json");
+		request.body(employeeJson);
+		return request.post("/employee-payroll");
+	}
 
 	@Test
 	public void given3EmployeesWhenWrittenToFileShouldMatchNumberOfEmployeeEntries() {
@@ -90,5 +117,29 @@ public class EmployeePayrollServiceTest {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Test
+	public void givenEmployeeDataInJsonServer_WhenRetrieved_ShouldMatchEmployeeCount() {
+		EmployeePayrollData[] arrayOfEmployees = getEmployeeList();
+		EmployeePayrollService payrollServiceObject = new EmployeePayrollService(Arrays.asList(arrayOfEmployees));
+		long entries = payrollServiceObject.countEntries(IOService.REST_IO);
+		Assert.assertEquals(4, entries);
+	}
+
+	@Test
+	public void givenNewEmployee_WhenAddedToJSONServer_ShouldMatch201ResponseAndEmployeeCount() {
+		EmployeePayrollData[] arrayOfEmployees = getEmployeeList();
+		EmployeePayrollService payrollServiceObject = new EmployeePayrollService(Arrays.asList(arrayOfEmployees));
+		
+		EmployeePayrollData newEmployee = new EmployeePayrollData(0,"Manish",4000000.0, LocalDate.now(), "M");
+		Response response = addEmployeeToJsonServer(newEmployee);
+		int statusCode = response.getStatusCode();
+		Assert.assertEquals(201, statusCode);
+		
+		newEmployee = new Gson().fromJson(response.asString(), EmployeePayrollData.class);
+		payrollServiceObject.addEmployeeToPayroll(newEmployee, IOService.REST_IO);
+		long entries = payrollServiceObject.countEntries(IOService.REST_IO);
+		Assert.assertEquals(5, entries);
 	}
 }

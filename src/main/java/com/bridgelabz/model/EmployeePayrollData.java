@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 public class EmployeePayrollData {
 
-	private int employeeId;
-	private String employeeName;
+	private int id;
+	private String name;
 	private double salary;
 	private LocalDate startDate;
 	private String gender;
@@ -13,37 +13,37 @@ public class EmployeePayrollData {
 	public EmployeePayrollData() {
 	}
 
-	public EmployeePayrollData(int employeeId, String employeeName, double salary) {
-		this.employeeId = employeeId;
-		this.employeeName = employeeName;
+	public EmployeePayrollData(int id, String name, double salary) {
+		this.id = id;
+		this.name = name;
 		this.salary = salary;
 	}
 
-	public EmployeePayrollData(int employeeId, String employeeName, double salary, LocalDate startDate) {
-		this(employeeId, employeeName, salary);
+	public EmployeePayrollData(int id, String name, double salary, LocalDate startDate) {
+		this(id, name, salary);
 		this.startDate = startDate;
 	}
 
 	
-	public EmployeePayrollData(int employeeId, String employeeName, double salary, LocalDate startDate, String gender) {
-		this(employeeId, employeeName, salary, startDate);
+	public EmployeePayrollData(int id, String name, double salary, LocalDate startDate, String gender) {
+		this(id, name, salary, startDate);
 		this.gender = gender;
 	}
 
-	public int getEmployeeId() {
-		return employeeId;
+	public int getId() {
+		return id;
 	}
 
-	public void setEmployeeId(int employeeId) {
-		this.employeeId = employeeId;
+	public void setId(int employeeId) {
+		this.id = employeeId;
 	}
 
-	public String getEmployeeName() {
-		return employeeName;
+	public String getName() {
+		return name;
 	}
 
-	public void setEmployeeName(String employeeName) {
-		this.employeeName = employeeName;
+	public void setName(String employeeName) {
+		this.name = employeeName;
 	}
 
 	public double getSalary() {
@@ -72,7 +72,7 @@ public class EmployeePayrollData {
 
 	@Override
 	public String toString() {
-		return "Id : " + employeeId + "\t" + "Name : " + employeeName + "\t" + "Gender : " + gender + "\t" + "Salary : "
+		return "Id : " + id + "\t" + "Name : " + name + "\t" + "Gender : " + gender + "\t" + "Salary : "
 				+ salary + "\t" + "Start Date : " + startDate;
 	}
 
@@ -85,12 +85,12 @@ public class EmployeePayrollData {
 		if (getClass() != obj.getClass())
 			return false;
 		EmployeePayrollData other = (EmployeePayrollData) obj;
-		if (employeeId != other.employeeId)
+		if (id != other.id)
 			return false;
-		if (employeeName == null) {
-			if (other.employeeName != null)
+		if (name == null) {
+			if (other.name != null)
 				return false;
-		} else if (!employeeName.equals(other.employeeName))
+		} else if (!name.equals(other.name))
 			return false;
 		if (Double.doubleToLongBits(salary) != Double.doubleToLongBits(other.salary))
 			return false;
