@@ -28,11 +28,7 @@ public class EmployeePayrollService {
 
 	public EmployeePayrollService(List<EmployeePayrollData> employeeList) {
 		this();
-		this.employeePayrollList = employeeList;
-	}
-
-	public int sizeOfEmployeeList() {
-		return this.employeePayrollList.size();
+		this.employeePayrollList = new ArrayList<>(employeeList);
 	}
 
 	public void readEmployeeData(IOService ioType) {
@@ -119,10 +115,11 @@ public class EmployeePayrollService {
 		}
 	}
 
-	public long countEnteries(IOService ioType) {
+	public long countEntries(IOService ioType) {
 		if (ioType.equals(IOService.FILE_IO))
 			return new FileIOService().countEntries();
-		return 0;
+		else
+			return this.employeePayrollList.size();
 	}
 
 	public void printEmployeePayrollData(IOService ioType) {

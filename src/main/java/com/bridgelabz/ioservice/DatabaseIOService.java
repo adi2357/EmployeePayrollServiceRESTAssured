@@ -173,8 +173,9 @@ public class DatabaseIOService {
 			int rowsUpdated = statement.executeUpdate(sql, statement.RETURN_GENERATED_KEYS);
 			if(rowsUpdated == 1) {
 				ResultSet resultSet = statement.getGeneratedKeys();
-				if(resultSet.next())
+				if(resultSet.next()) {
 					employeeId = resultSet.getInt(1);
+				}
 			}
 		} catch (SQLException e) {
 			throw new DBException("Cannot establish connection", DBException.ExceptionType.STATEMENT_FAILURE);
@@ -182,12 +183,14 @@ public class DatabaseIOService {
 		try (Statement statement = connection.createStatement()) {
 			double deductions = salary * 0.2;
 			double incomeTax = (salary - deductions)* 0.1;
-			String sql = String.format("insert into payroll (employee_id, basic_pay, deductions, income_tax) values"
+			String sql = String.format("insert into payroll "
+									 + "(employee_id, basic_pay, deductions, income_tax) values "
 									 + "(%s, %s, %s, %s)",employeeId, salary, deductions, incomeTax);
 			int rowsUpdated = statement.executeUpdate(sql);
 			if(rowsUpdated == 1) 
-				newEmployeePayrollData = new EmployeePayrollData(employeeId, name, salary, startDate, gender);				
+				newEmployeePayrollData = new EmployeePayrollData(employeeId, name, salary, startDate, gender);
 		} catch (SQLException e) {
+			e.printStackTrace();
 			throw new DBException("Cannot establish connection", DBException.ExceptionType.STATEMENT_FAILURE);
 		}
 		try {
