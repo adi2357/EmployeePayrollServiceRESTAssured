@@ -62,6 +62,61 @@
         "day": 2
       },
       "gender": "M"
+    },
+    {
+      "id": 6,
+      "name": "Akshat",
+      "salary": 400000,
+      "startDate": {
+        "year": 2020,
+        "month": 11,
+        "day": 2
+      },
+      "gender": "M"
+    },
+    {
+      "id": 7,
+      "name": "Rahul",
+      "salary": 3000000,
+      "startDate": {
+        "year": 2020,
+        "month": 11,
+        "day": 2
+      },
+      "gender": "M"
+    },
+    {
+      "id": 8,
+      "name": "Kashi",
+      "salary": 4000000,
+      "startDate": {
+        "year": 2020,
+        "month": 11,
+        "day": 2
+      },
+      "gender": "F"
+    },
+    {
+      "id": 9,
+      "name": "Aasmi",
+      "salary": 3000000,
+      "startDate": {
+        "year": 2020,
+        "month": 11,
+        "day": 2
+      },
+      "gender": "F"
+    },
+    {
+      "id": 10,
+      "name": "Mohit",
+      "salary": 3000000,
+      "startDate": {
+        "year": 2020,
+        "month": 11,
+        "day": 2
+      },
+      "gender": "M"
     }
   ]
 }

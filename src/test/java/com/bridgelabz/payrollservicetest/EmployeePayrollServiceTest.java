@@ -1,7 +1,10 @@
 package com.bridgelabz.payrollservicetest;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -141,5 +144,48 @@ public class EmployeePayrollServiceTest {
 		payrollServiceObject.addEmployeeToPayroll(newEmployee, IOService.REST_IO);
 		long entries = payrollServiceObject.countEntries(IOService.REST_IO);
 		Assert.assertEquals(5, entries);
+	}
+
+	@Test
+	public void givenMultipleEmployees_WhenAdded_ShouldMatchTheCount() throws InterruptedException {
+		
+		EmployeePayrollData[] arrayOfEmployees = getEmployeeList();
+		EmployeePayrollService payrollServiceObject = new EmployeePayrollService(Arrays.asList(arrayOfEmployees));
+		
+		EmployeePayrollData[] arrayOfNewEmployees = {
+				new EmployeePayrollData(0, "Akshat", 400000.0, LocalDate.now(),  "M"),
+				new EmployeePayrollData(0, "Rahul", 3000000.0, LocalDate.now(), "M"),
+				new EmployeePayrollData(0, "Kashi", 4000000.0, LocalDate.now(), "F"),
+				new EmployeePayrollData(0, "Mohit", 3000000.0, LocalDate.now(), "M"),
+				new EmployeePayrollData(0, "Aasmi", 3000000.0, LocalDate.now(), "F")
+			};
+		
+		Map<Integer, Boolean> employeeAdditionStatus = new HashMap<Integer, Boolean>();
+		Instant threadStart = Instant.now();
+		Arrays.asList(arrayOfNewEmployees).stream().forEach(employee -> {
+			Runnable employeeAddition = () -> {
+				employeeAdditionStatus.put(employee.hashCode(), false);
+				Response response = addEmployeeToJsonServer(employee);
+				int statusCode = response.getStatusCode();
+				Assert.assertEquals(201, statusCode);
+				
+				EmployeePayrollData newEmployee = new Gson().fromJson(response.asString(), EmployeePayrollData.class);
+				payrollServiceObject.addEmployeeToPayroll(newEmployee, IOService.REST_IO);
+				employeeAdditionStatus.put(employee.hashCode(), true);
+			};
+			Thread thread = new Thread(employeeAddition, employee.getName());
+			thread.start();
+		});
+		while(employeeAdditionStatus.containsValue(false)) {
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+		}
+		Instant threadEnd = Instant.now();
+		System.out.println("Duration with thread : "+ Duration.between(threadStart, threadEnd));
+		long entries = payrollServiceObject.countEntries(IOService.REST_IO);
+		Assert.assertEquals(10, entries);
 	}
 }
