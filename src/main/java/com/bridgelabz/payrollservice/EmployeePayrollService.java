@@ -74,18 +74,19 @@ public class EmployeePayrollService {
 		return null;
 	}
 
-	public void updateEmployeeSalary(String name, double salary) throws DBException {
-		int result = employeePayrollDBService.updateEmployeeData(name, salary);
-		if(result == 0)
-			throw new DBException("Cannot update the employee payroll data", DBException.ExceptionType.UPDATE_ERROR);
+	public void updateEmployeeSalary(String name, double salary, IOService ioType) throws DBException {
+		if (ioType.equals(IOService.DB_IO)) {
+			int result = employeePayrollDBService.updateEmployeeData(name, salary);
+			if(result == 0)
+				throw new DBException("Cannot update the employee payroll data", DBException.ExceptionType.UPDATE_ERROR);
+		}
 		EmployeePayrollData employeePayrollData = this.getEmployeePayrollData(name);
-		if(employeePayrollData != null)
-			employeePayrollData.setSalary(salary);
+		if(employeePayrollData != null)		employeePayrollData.setSalary(salary);
 		else
 			throw new DBException("Cannot find the employee payroll data", DBException.ExceptionType.INVALID_PAYROLL_DATA);
 	}
 
-	private EmployeePayrollData getEmployeePayrollData(String name) {
+	public EmployeePayrollData getEmployeePayrollData(String name) {
 		return this.employeePayrollList.stream()
 				   .filter(employeeData -> employeeData.getName().equals(name))
 				   .findFirst()

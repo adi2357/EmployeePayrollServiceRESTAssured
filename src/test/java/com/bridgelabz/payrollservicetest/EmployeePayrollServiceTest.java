@@ -12,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.bridgelabz.exceptions.DBException;
 import com.bridgelabz.model.EmployeePayrollData;
 import com.bridgelabz.payrollservice.EmployeePayrollService;
 import com.bridgelabz.payrollservice.EmployeePayrollService.IOService;
@@ -42,6 +43,14 @@ public class EmployeePayrollServiceTest {
 		request.header("Content-Type", "application/json");
 		request.body(employeeJson);
 		return request.post("/employee-payroll");
+	}
+
+	public Response updateEmployeeSalaryInJsonServer(EmployeePayrollData employee) {
+		String employeeJson = new Gson().toJson(employee);
+		RequestSpecification request = RestAssured.given();
+		request.header("Content-Type", "application/json");
+		request.body(employeeJson);
+		return request.put("/employee-payroll/"+employee.getId());
 	}
 
 	@Test
@@ -82,7 +91,7 @@ public class EmployeePayrollServiceTest {
 		try {
 			EmployeePayrollService payrollServiceObject = new EmployeePayrollService();
 			payrollServiceObject.readEmployeeData(IOService.DB_IO);
-			payrollServiceObject.updateEmployeeSalary("Teresa", 3000000.0);
+			payrollServiceObject.updateEmployeeSalary("Teresa", 3000000.0, IOService.DB_IO);
 			boolean result = payrollServiceObject.checkEmployeePayrollInSyncWithDB("Teresa");
 			Assert.assertTrue(result);
 		}catch (Exception e) {
@@ -185,6 +194,25 @@ public class EmployeePayrollServiceTest {
 		}
 		Instant threadEnd = Instant.now();
 		System.out.println("Duration with thread : "+ Duration.between(threadStart, threadEnd));
+		long entries = payrollServiceObject.countEntries(IOService.REST_IO);
+		Assert.assertEquals(10, entries);
+	}
+
+	@Test
+	public void givenNewSalaryForEmployee_WhenUpdatedInJSONServer_ShouldMatch200response() {
+
+		EmployeePayrollData[] arrayOfEmployees = getEmployeeList();
+		EmployeePayrollService payrollServiceObject = new EmployeePayrollService(Arrays.asList(arrayOfEmployees));
+		try {
+			payrollServiceObject.updateEmployeeSalary("Mohit", 6000000.0, IOService.REST_IO);
+		} catch (DBException e) {
+			e.printStackTrace();
+		}
+		EmployeePayrollData employeePayrollData = payrollServiceObject.getEmployeePayrollData("Mohit");		
+		Response response = updateEmployeeSalaryInJsonServer(employeePayrollData);
+		int statusCode = response.getStatusCode();
+		Assert.assertEquals(200, statusCode);
+
 		long entries = payrollServiceObject.countEntries(IOService.REST_IO);
 		Assert.assertEquals(10, entries);
 	}
